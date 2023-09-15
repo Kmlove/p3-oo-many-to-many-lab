@@ -7,10 +7,10 @@ class Author:
         return f"<Author: {self.name}>"
     
     def contracts(self):
-        return [contract for contract in Contract.all_contracts if contract.author == self]
+        return [contract for contract in Contract.all if contract.author == self]
     
     def books(self):
-        return [contract.book for contract in Contract.all_contracts if contract.author == self]
+        return [contract.book for contract in Contract.all if contract.author == self]
     
     def sign_contract(self, book, date, royalty):
         return Contract(self, book, date, royalty)
@@ -31,21 +31,21 @@ class Book:
         return f"<Book: {self.title}>"
     
     def contracts(self):
-        return [contract for contract in Contract.all_contracts if contract.book == self]
+        return [contract for contract in Contract.all if contract.book == self]
     
     def authors(self):
-        return [contract.author for contract in Contract.all_contracts if contract.book == self]
+        return [contract.author for contract in Contract.all if contract.book == self]
 
 
 class Contract:
-    all_contracts = []
+    all = []
 
     def __init__(self, author, book, date, royalties):
         self.author = author
         self.book = book
         self.date = date
         self.royalties = royalties
-        Contract.all_contracts.append(self)
+        Contract.all.append(self)
     def __repr__(self):
         return f'''
                 <
@@ -56,8 +56,11 @@ class Contract:
             '''
 
     @classmethod
-    def contracts_by_date(cls, date):
-        return [contract for contract in cls.all_contracts if contract.date == date]
+    def contracts_by_date(cls):
+        def sort_func(e):
+            return e.date
+        cls.all.sort(key=sort_func)
+        return cls.all
 
     def get_author(self):
         return self._author
@@ -95,13 +98,13 @@ class Contract:
             raise Exception("Please enter a valid royalty")
     royalties = property(get_royalties, set_royalties)
 
-Contract.all = []
-author = Author("Name")
-book1 = Book("Title 1")
-book2 = Book("Title 2")
-book3 = Book("Title 3")
-contract1 = Contract(author, book1, "02/01/2001", 10)
-contract2 = Contract(author, book2, "01/01/2001", 20)
-contract3 = Contract(author, book3, "03/01/2001", 30)
+# Contract.all = []
+# author = Author("Name")
+# book1 = Book("Title 1")
+# book2 = Book("Title 2")
+# book3 = Book("Title 3")
+# contract1 = Contract(author, book1, "02/01/2001", 10)
+# contract2 = Contract(author, book2, "01/01/2001", 20)
+# contract3 = Contract(author, book3, "03/01/2001", 30)
 
-import ipdb; ipdb.set_trace()
+# import ipdb; ipdb.set_trace()
